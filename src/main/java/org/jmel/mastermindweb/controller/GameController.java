@@ -1,7 +1,10 @@
-package org.jmel.mastermindweb;
+package org.jmel.mastermindweb.controller;
 
 import org.jmel.mastermind.core.Game;
 import org.jmel.mastermind.core.feedbackstrategy.Feedback;
+import org.jmel.mastermindweb.service.GameService;
+import org.jmel.mastermindweb.model.GameSession;
+import org.jmel.mastermindweb.model.MastermindConfig;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;

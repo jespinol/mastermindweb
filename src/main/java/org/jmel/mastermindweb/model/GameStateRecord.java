@@ -1,4 +1,4 @@
-package org.jmel.mastermindweb;
+package org.jmel.mastermindweb.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

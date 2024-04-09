@@ -1,6 +1,9 @@
-package org.jmel.mastermindweb;
+package org.jmel.mastermindweb.service;
 
 import org.jmel.mastermind.core.Game;
+import org.jmel.mastermindweb.model.GameSession;
+import org.jmel.mastermindweb.model.GameStateRecord;
+import org.jmel.mastermindweb.model.MastermindConfig;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

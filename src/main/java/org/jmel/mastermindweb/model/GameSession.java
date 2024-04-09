@@ -1,4 +1,4 @@
-package org.jmel.mastermindweb;
+package org.jmel.mastermindweb.model;
 
 import org.jmel.mastermind.core.Game;
 

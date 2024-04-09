@@ -1,6 +1,8 @@
 package org.jmel.mastermindweb;
 
 import org.jmel.mastermind.core.Game;
+import org.jmel.mastermindweb.model.MastermindConfig;
+import org.jmel.mastermindweb.service.GameService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

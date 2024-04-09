@@ -1,6 +1,9 @@
 package org.jmel.mastermindweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jmel.mastermindweb.controller.GameController;
+import org.jmel.mastermindweb.model.GameStateRecord;
+import org.jmel.mastermindweb.model.MastermindConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

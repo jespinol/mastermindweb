@@ -14,8 +14,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.List;
 import java.util.UUID;
 
-import static org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl.DEFAULT;
-import static org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference.LOCAL_RANDOM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,7 +26,7 @@ public class GameControllerTests {
 
     @Test
     void sessionWithDefaultGameIsCreatedSuccessfully() throws Exception {
-        mockMvc.perform(get("/new")
+        mockMvc.perform(post("/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
                 .andExpect(status().isOk());
@@ -46,7 +44,7 @@ public class GameControllerTests {
         ObjectMapper mapper = new ObjectMapper();
         String bodyJson = mapper.writer().writeValueAsString(config);
 
-        mockMvc.perform(get("/new")
+        mockMvc.perform(post("/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bodyJson))
                 .andExpect(status().isOk())
@@ -55,7 +53,7 @@ public class GameControllerTests {
 
     @Test
     void gameAcceptsGuessAndReturnsFeedback() throws Exception {
-        MvcResult sessionId = mockMvc.perform(get("/new")
+        MvcResult sessionId = mockMvc.perform(post("/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
                 .andExpect(status().isOk())
@@ -74,7 +72,7 @@ public class GameControllerTests {
 
     @Test
     void gameInfoReturnsValidGameState() throws Exception {
-        MvcResult idResponse = mockMvc.perform(get("/new")
+        MvcResult idResponse = mockMvc.perform(post("/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
                 .andExpect(status().isOk())

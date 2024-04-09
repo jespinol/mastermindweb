@@ -14,7 +14,7 @@ import java.util.*;
 public class GameController {
     public Map<UUID, GameSession> sessions = new HashMap<>();
 
-    @GetMapping("/new")
+    @PostMapping("/new")
     public UUID createGame(@RequestBody Optional<MastermindConfig> configInput) throws IOException {
         MastermindConfig config = configInput.orElseGet(MastermindConfig::new);
         GameSession gameSession = GameService.createGameSession(config);

@@ -21,14 +21,12 @@ public class GameController {
     }
 
     @GetMapping("/gameInfo")
-    public String findSession(@RequestParam("id") UUID id) {
-        if (!sessions.containsKey(id)) return "not found";
+    public String gameInfo(@RequestParam("id") UUID id) {
+        if (!sessions.containsKey(id)) return "Game not found";
 
         Game game = findGameById(id);
-        if (game.isGameWon()) return "You already won!";
-        if (game.movesCompleted() == game.maxAttempts()) return "Game over!";
 
-        return "Game in progress. ";
+        return GameService.getGameState(game);
     }
 
     @PostMapping("/guess")

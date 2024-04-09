@@ -1,11 +1,9 @@
 package org.jmel.mastermindweb;
 
 import org.jmel.mastermind.core.Game;
-import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Component
 public class GameSession {
     private UUID id;
     private Game game;

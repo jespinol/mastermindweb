@@ -36,7 +36,7 @@ public class GameServiceTests {
                 () -> assertEquals(game.codeLength(), 5),
                 () -> assertEquals(game.numColors(), 4),
                 () -> assertEquals(game.maxAttempts(), 3)
-                );
+        );
     }
 
     @Test

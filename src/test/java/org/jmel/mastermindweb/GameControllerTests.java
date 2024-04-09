@@ -40,8 +40,8 @@ public class GameControllerTests {
         config.setCodeLength(4);
         config.setNumColors(8);
         config.setMaxAttempts(10);
-        config.setCodeSupplierPreference(LOCAL_RANDOM);
-        config.setFeedbackStrategy(DEFAULT);
+        config.setCodeSupplierPreference("LOCAL_RANDOM");
+        config.setFeedbackStrategy("DEFAULT");
 
         ObjectMapper mapper = new ObjectMapper();
         String bodyJson = mapper.writer().writeValueAsString(config);

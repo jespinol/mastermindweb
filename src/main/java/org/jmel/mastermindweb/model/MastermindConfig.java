@@ -1,21 +1,15 @@
 package org.jmel.mastermindweb.model;
 
-import org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategy;
-import org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl.DEFAULT;
-import static org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference.RANDOM_ORG_API;
 
 public class MastermindConfig { // TODO: record? use builder?
     private int codeLength = 4;
     private int numColors = 8;
     private int maxAttempts = 10;
-    private CodeSupplierPreference codeSupplierPreference = RANDOM_ORG_API;
+    private String codeSupplierPreference = "RANDOM_ORG_API";
     private List<Integer> secretCode = new ArrayList<>();
-    private FeedbackStrategy feedbackStrategy = DEFAULT;
+    private String feedbackStrategy = "DEFAULT";
 
     public int getCodeLength() {
         return codeLength;
@@ -41,11 +35,11 @@ public class MastermindConfig { // TODO: record? use builder?
         this.maxAttempts = maxAttempts;
     }
 
-    public CodeSupplierPreference getCodeSupplierPreference() {
+    public String getCodeSupplierPreference() {
         return codeSupplierPreference;
     }
 
-    public void setCodeSupplierPreference(CodeSupplierPreference codeSupplierPreference) {
+    public void setCodeSupplierPreference(String codeSupplierPreference) {
         this.codeSupplierPreference = codeSupplierPreference;
     }
 
@@ -57,11 +51,11 @@ public class MastermindConfig { // TODO: record? use builder?
         this.secretCode = secretCode;
     }
 
-    public FeedbackStrategy FeedbackStrategy() {
+    public String FeedbackStrategy() {
         return feedbackStrategy;
     }
 
-    public void setFeedbackStrategy(FeedbackStrategy feedbackStrategy) {
+    public void setFeedbackStrategy(String feedbackStrategy) {
         this.feedbackStrategy = feedbackStrategy;
     }
 }

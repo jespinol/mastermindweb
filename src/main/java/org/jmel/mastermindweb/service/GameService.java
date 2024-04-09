@@ -1,6 +1,8 @@
 package org.jmel.mastermindweb.service;
 
 import org.jmel.mastermind.core.Game;
+import org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl;
+import org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference;
 import org.jmel.mastermindweb.model.GameSession;
 import org.jmel.mastermindweb.model.GameStateRecord;
 import org.jmel.mastermindweb.model.MastermindConfig;
@@ -25,8 +27,8 @@ public class GameService {
                 .codeLength(config.getCodeLength())
                 .numColors(config.getNumColors())
                 .maxAttempts(config.getMaxAttempts())
-                .codeSupplierPreference(config.getCodeSupplierPreference())
-                .feedbackStrategy(config.FeedbackStrategy());
+                .codeSupplierPreference(CodeSupplierPreference.valueOf(config.getCodeSupplierPreference()))
+                .feedbackStrategy(FeedbackStrategyImpl.valueOf(config.FeedbackStrategy()));
 
         if (!config.getSecretCode().isEmpty()) {
             builder.secretCode(config.getSecretCode());

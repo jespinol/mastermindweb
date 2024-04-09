@@ -1,15 +1,21 @@
 package org.jmel.mastermindweb;
 
-import org.springframework.stereotype.Component;
+import org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategy;
+import org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference;
 
-@Component
-public class MastermindConfig {
-    private int codeLength;
-    private int numColors;
-    private int maxAttempts;
-    private String codeSupplierPreference;
-    private String secretCode;
-    private String feedbackStrategy;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl.DEFAULT;
+import static org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference.RANDOM_ORG_API;
+
+public class MastermindConfig { // TODO: record? use builder?
+    private int codeLength = 4;
+    private int numColors = 8;
+    private int maxAttempts = 10;
+    private CodeSupplierPreference codeSupplierPreference = RANDOM_ORG_API;
+    private List<Integer> secretCode = new ArrayList<>();
+    private FeedbackStrategy feedbackStrategy = DEFAULT;
 
     public int getCodeLength() {
         return codeLength;
@@ -35,27 +41,27 @@ public class MastermindConfig {
         this.maxAttempts = maxAttempts;
     }
 
-    public String getCodeSupplierPreference() {
+    public CodeSupplierPreference getCodeSupplierPreference() {
         return codeSupplierPreference;
     }
 
-    public void setCodeSupplierPreference(String codeSupplierPreference) {
+    public void setCodeSupplierPreference(CodeSupplierPreference codeSupplierPreference) {
         this.codeSupplierPreference = codeSupplierPreference;
     }
 
-    public String getSecretCode() {
+    public List<Integer> getSecretCode() {
         return secretCode;
     }
 
-    public void setSecretCode(String secretCode) {
+    public void setSecretCode(List<Integer> secretCode) {
         this.secretCode = secretCode;
     }
 
-    public String getFeedbackStrategy() {
+    public FeedbackStrategy FeedbackStrategy() {
         return feedbackStrategy;
     }
 
-    public void setFeedbackStrategy(String feedbackStrategy) {
+    public void setFeedbackStrategy(FeedbackStrategy feedbackStrategy) {
         this.feedbackStrategy = feedbackStrategy;
     }
 }

@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.jmel</groupId>
-    <artifactId>mastermind-web</artifactId>
+    <artifactId>mastermindweb</artifactId>
     <version>1.0</version>
     <name>Mastermind Model-Controller client</name>
-    <description>mastermind-web</description>
+    <description>mastermindweb</description>
     <properties>
         <java.version>21</java.version>
     </properties>
@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>org.jmel</groupId>
-            <artifactId>mastermind-core</artifactId>
+            <artifactId>mastermindcore</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>

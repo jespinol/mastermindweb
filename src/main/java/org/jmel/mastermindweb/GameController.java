@@ -1,38 +1,50 @@
 package org.jmel.mastermindweb;
 
 import org.jmel.mastermind.core.Game;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.jmel.mastermind.core.feedbackstrategy.Feedback;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class GameController {
-    private static final Map<UUID, Game> games = new HashMap<>();
+    public Map<UUID, GameSession> sessions = new HashMap<>();
 
-    @GetMapping("/new")
-    public String createGame() {
+    @PostMapping("/new")
+    public UUID createGame(@RequestBody Optional<MastermindConfig> configInput) throws IOException {
         UUID gameId = UUID.randomUUID();
-        try {
-            games.put(gameId, new Game.Builder().build());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        MastermindConfig configuration = configInput.orElseGet(MastermindConfig::new);
 
-        return "Your gameId: " + gameId;
+        GameSession gameSession = new GameSession();
+        gameSession.setId(gameId);
+        gameSession.setConfiguration(configuration);
+        gameSession.setGame(new Game.Builder().build()); // TODO: use configurations for game builder
+        sessions.put(gameId, gameSession);
+
+        return gameId;
     }
 
-    @GetMapping("/get/{id}")
-    public String findGame(@PathVariable UUID id) {
-        Game game = games.get(id);
-        if (game == null) {
-            return "Game not found";
-        }
+    @GetMapping("/gameInfo")
+    public String findSession(@RequestParam("id") UUID id) {
+        if (!sessions.containsKey(id)) return "not found";
 
-        return game.isGameWon() ? "You already won!" : game.movesCompleted() < game.maxAttempts() ? "Game in progress" : "You lost!";
+        Game game = findGameById(id);
+        if (game.isGameWon()) return "You already won!";
+        if (game.movesCompleted() == game.maxAttempts()) return "Game over!";
+
+        return "Game in progress. ";
+    }
+
+    @PostMapping("/guess")
+    public Feedback processGuess(@RequestParam("id") UUID id, @RequestBody List<Integer> guess) {
+        Game game = findGameById(id);
+
+        return game.processGuess(guess);
+    }
+
+    private Game findGameById(UUID id) {
+        return sessions.get(id).getGame();
     }
 }

@@ -11,17 +11,20 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.List;
 import java.util.UUID;
 
+import static org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl.DEFAULT;
+import static org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference.LOCAL_RANDOM;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(GameController.class)
-public class RequestBodyTests {
+public class GameControllerTests {
     @Autowired
     MockMvc mockMvc;
 
     @Test
     void sessionWithDefaultGameIsCreatedSuccessfully() throws Exception {
-        mockMvc.perform(post("/new")
+        mockMvc.perform(get("/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
                 .andExpect(status().isOk());
@@ -33,13 +36,13 @@ public class RequestBodyTests {
         config.setCodeLength(4);
         config.setNumColors(8);
         config.setMaxAttempts(10);
-        config.setCodeSupplierPreference("LOCAL_RANDOM");
-        config.setFeedbackStrategy("DEFAULT");
+        config.setCodeSupplierPreference(LOCAL_RANDOM);
+        config.setFeedbackStrategy(DEFAULT);
 
         ObjectMapper mapper = new ObjectMapper();
         String bodyJson = mapper.writer().writeValueAsString(config);
 
-        mockMvc.perform(post("/new")
+        mockMvc.perform(get("/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bodyJson))
                 .andExpect(status().isOk())
@@ -48,7 +51,7 @@ public class RequestBodyTests {
 
     @Test
     void gameAcceptsGuessAndReturnsFeedback() throws Exception {
-        MvcResult sessionId = mockMvc.perform(post("/new")
+        MvcResult sessionId = mockMvc.perform(get("/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
                 .andExpect(status().isOk())

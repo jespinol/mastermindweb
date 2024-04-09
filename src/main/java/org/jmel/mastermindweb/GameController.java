@@ -2,7 +2,6 @@ package org.jmel.mastermindweb;
 
 import org.jmel.mastermind.core.Game;
 import org.jmel.mastermind.core.feedbackstrategy.Feedback;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -12,18 +11,13 @@ import java.util.*;
 public class GameController {
     public Map<UUID, GameSession> sessions = new HashMap<>();
 
-    @PostMapping("/new")
+    @GetMapping("/new")
     public UUID createGame(@RequestBody Optional<MastermindConfig> configInput) throws IOException {
-        UUID gameId = UUID.randomUUID();
-        MastermindConfig configuration = configInput.orElseGet(MastermindConfig::new);
+        MastermindConfig config = configInput.orElseGet(MastermindConfig::new);
+        GameSession gameSession = GameService.createGameSession(config);
+        sessions.put(gameSession.getId(), gameSession);
 
-        GameSession gameSession = new GameSession();
-        gameSession.setId(gameId);
-        gameSession.setConfiguration(configuration);
-        gameSession.setGame(new Game.Builder().build()); // TODO: use configurations for game builder
-        sessions.put(gameId, gameSession);
-
-        return gameId;
+        return gameSession.getId();
     }
 
     @GetMapping("/gameInfo")

@@ -2,9 +2,11 @@ package org.jmel.mastermindweb.controller;
 
 import org.jmel.mastermind.core.Game;
 import org.jmel.mastermind.core.feedbackstrategy.Feedback;
+import org.jmel.mastermindweb.model.GameState;
 import org.jmel.mastermindweb.service.GameService;
 import org.jmel.mastermindweb.model.GameSession;
 import org.jmel.mastermindweb.model.MastermindConfig;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -24,9 +26,8 @@ public class GameController {
     }
 
     @GetMapping("/gameInfo")
-    public String gameInfo(@RequestParam("id") UUID id) {
-        if (!sessions.containsKey(id)) return "Game not found";
-
+    public GameState gameInfo(@RequestParam("id") UUID id) {
+        if (!sessions.containsKey(id)) throw new IllegalArgumentException("Session not found");
         Game game = findGameById(id);
 
         return GameService.getGameState(game);
@@ -34,6 +35,7 @@ public class GameController {
 
     @PostMapping("/guess")
     public Feedback processGuess(@RequestParam("id") UUID id, @RequestBody List<Integer> guess) {
+        if (!sessions.containsKey(id)) throw new IllegalArgumentException("Session not found");
         Game game = findGameById(id);
 
         return game.processGuess(guess);
@@ -42,4 +44,11 @@ public class GameController {
     private Game findGameById(UUID id) {
         return sessions.get(id).getGame();
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    void handleIllegalArgumentException() {
+        // Do nothing
+    }
+
 }

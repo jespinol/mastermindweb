@@ -4,7 +4,7 @@ import org.jmel.mastermind.core.Game;
 import org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl;
 import org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference;
 import org.jmel.mastermindweb.model.GameSession;
-import org.jmel.mastermindweb.model.GameStateRecord;
+import org.jmel.mastermindweb.model.GameState;
 import org.jmel.mastermindweb.model.MastermindConfig;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +37,8 @@ public class GameService {
         return builder.build();
     }
 
-    public static String getGameState(Game game) {
-        GameStateRecord gameState = new GameStateRecord(game.codeLength(), game.numColors(), game.maxAttempts(), game.isGameWon(), game.movesCompleted());
+    public static GameState getGameState(Game game) {
 
-        return gameState.toString();
+        return new GameState(game.codeLength(), game.numColors(), game.maxAttempts(), game.isGameWon(), game.movesCompleted());
     }
 }

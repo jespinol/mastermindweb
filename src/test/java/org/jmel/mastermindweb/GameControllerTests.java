@@ -2,7 +2,7 @@ package org.jmel.mastermindweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jmel.mastermindweb.controller.GameController;
-import org.jmel.mastermindweb.model.GameStateRecord;
+import org.jmel.mastermindweb.model.GameState;
 import org.jmel.mastermindweb.model.MastermindConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,21 +81,25 @@ public class GameControllerTests {
         UUID id = UUID.fromString(idResponse.getResponse().getContentAsString().replace("\"", ""));
         String infoResponse = mockMvc.perform(get("/gameInfo?id=" + id))
                 .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        String expectedResponse = new GameStateRecord(4, 8, 10, false, 0).toString();
-
-        assertEquals(expectedResponse, infoResponse);
-    }
-
-    @Test
-    void gameInfoReturnsGameNotFound() throws Exception {
-        String response = mockMvc.perform(get("/gameInfo?id=" + UUID.randomUUID()))
-                .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals("Game not found", response);
+        GameState actual = new ObjectMapper().readValue(infoResponse, GameState.class);
+        GameState expected = new GameState(4, 8, 10, false, 0);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void gameInfoReturnsGameNotFound() throws Exception {
+//        String response =
+                mockMvc.perform(get("/gameInfo?id=" + UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+//                .andReturn()
+//                .getResponse()
+//                .getContentAsString();
+
+//        assertEquals("Game not found", response);
     }
 }

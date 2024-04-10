@@ -1,14 +1,27 @@
-package org.jmel.mastermindweb.model;
+package org.jmel.mastermindweb.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MastermindConfig { // TODO: record? use builder?
+    @JsonProperty(required = false)
     private int codeLength = 4;
+
+    @JsonProperty(required = false)
     private int numColors = 8;
+
+    @JsonProperty(required = false)
     private int maxAttempts = 10;
+
+    @JsonProperty(required = false)
     private String codeSupplierPreference = "RANDOM_ORG_API";
+
+    @JsonProperty(required = false)
     private List<Integer> secretCode = new ArrayList<>();
+
+    @JsonProperty(required = false)
     private String feedbackStrategy = "DEFAULT";
 
     public int getCodeLength() {

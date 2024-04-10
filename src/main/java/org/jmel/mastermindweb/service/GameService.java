@@ -18,13 +18,9 @@ import java.util.UUID;
 public class GameService {
     public enum CodeSupplierPreference {RANDOM_ORG_API, LOCAL_RANDOM, USER_DEFINED}
 
-    public static GameSession createGameSession(MastermindConfig config) throws IOException {
-        GameSession gameSession = new GameSession();
-        gameSession.setId(UUID.randomUUID());
-        gameSession.setConfiguration(config);
-        gameSession.setGame(buildGame(config));
+    public static Game createGame(MastermindConfig config) throws IOException {
 
-        return gameSession;
+        return buildGame(config);
     }
 
     public static Game buildGame(MastermindConfig config) throws IOException {

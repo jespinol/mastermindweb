@@ -47,8 +47,7 @@ public class GameControllerTests {
         mockMvc.perform(post("/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bodyJson))
-                .andExpect(status().isOk())
-                .andReturn(); // TODO: this should check that the session has the configuration above
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -63,11 +62,10 @@ public class GameControllerTests {
         ObjectMapper mapper = new ObjectMapper();
         String bodyJson = mapper.writer().writeValueAsString(List.of(1, 2, 3, 4));
         UUID id = UUID.fromString(sessionId.getResponse().getContentAsString().replace("\"", ""));
-        MvcResult feedback = mockMvc.perform(post("/guess?id=" + id)
+        mockMvc.perform(post("/guess?id=" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bodyJson))
-                .andExpect(status().isOk())
-                .andReturn(); // TODO: This should check that the feedback is returned and correct
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -93,13 +91,8 @@ public class GameControllerTests {
 
     @Test
     void gameInfoReturnsGameNotFound() throws Exception {
-//        String response =
-                mockMvc.perform(get("/gameInfo?id=" + UUID.randomUUID()))
+        mockMvc.perform(get("/gameInfo?id=" + UUID.randomUUID()))
                 .andExpect(status().isNotFound());
-//                .andReturn()
-//                .getResponse()
-//                .getContentAsString();
 
-//        assertEquals("Game not found", response);
     }
 }

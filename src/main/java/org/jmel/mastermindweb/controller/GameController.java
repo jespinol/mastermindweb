@@ -3,7 +3,6 @@ package org.jmel.mastermindweb.controller;
 import org.jmel.mastermind.core.Game;
 import org.jmel.mastermindweb.dto.GameState;
 import org.jmel.mastermindweb.service.GameService;
-import org.jmel.mastermindweb.service.GameSession;
 import org.jmel.mastermindweb.dto.MastermindConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,15 +13,16 @@ import java.util.*;
 
 @RestController
 public class GameController {
-    public Map<UUID, GameSession> sessions = new HashMap<>();
+    public Map<UUID, Game> sessions = new HashMap<>();
 
     @PostMapping("/new")
     public UUID createGame(@RequestBody Optional<MastermindConfig> configInput) throws IOException {
         MastermindConfig config = configInput.orElseGet(MastermindConfig::new);
-        GameSession gameSession = GameService.createGameSession(config);
-        sessions.put(gameSession.getId(), gameSession);
+        UUID id = UUID.randomUUID();
+        Game game = GameService.createGame(config);
+        sessions.put(id, game);
 
-        return gameSession.getId();
+        return id;
     }
 
     @GetMapping("/gameInfo")
@@ -42,7 +42,7 @@ public class GameController {
     }
 
     private Game findGameById(UUID id) {
-        return sessions.get(id).getGame();
+        return sessions.get(id);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

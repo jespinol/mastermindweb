@@ -2,7 +2,7 @@ package org.jmel.mastermindweb.service;
 
 import org.jmel.mastermind.core.Game;
 import org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl;
-import org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference;
+import org.jmel.mastermind.core.secretcodesupplier.*;
 import org.jmel.mastermindweb.model.GameSession;
 import org.jmel.mastermindweb.model.GameState;
 import org.jmel.mastermindweb.model.MastermindConfig;
@@ -27,18 +27,21 @@ public class GameService {
                 .codeLength(config.getCodeLength())
                 .numColors(config.getNumColors())
                 .maxAttempts(config.getMaxAttempts())
-                .codeSupplierPreference(CodeSupplierPreference.valueOf(config.getCodeSupplierPreference()))
                 .feedbackStrategy(FeedbackStrategyImpl.valueOf(config.FeedbackStrategy()));
 
-        if (!config.getSecretCode().isEmpty()) {
-            builder.secretCode(config.getSecretCode());
-        }
+        CodeSupplier supplier = switch (CodeSupplierPreference.valueOf(config.getCodeSupplierPreference())) {
+            case RANDOM_ORG_API -> ApiCodeSupplier.of(config.getCodeLength(), config.getNumColors());
+            case LOCAL_RANDOM -> LocalRandomCodeSupplier.of(config.getCodeLength(), config.getNumColors());
+            case USER_DEFINED -> UserDefinedCodeSupplier.of(config.getSecretCode());
+            default ->
+                    throw new IllegalArgumentException("Invalid code supplier: " + config.getCodeSupplierPreference());
+        };
+        builder.codeSupplier(supplier);
 
         return builder.build();
     }
 
     public static GameState getGameState(Game game) {
-
         return new GameState(game.codeLength(), game.numColors(), game.maxAttempts(), game.isGameWon(), game.movesCompleted());
     }
 }

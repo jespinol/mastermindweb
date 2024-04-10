@@ -6,9 +6,9 @@ import org.jmel.mastermind.core.secretcodesupplier.ApiCodeSupplier;
 import org.jmel.mastermind.core.secretcodesupplier.CodeSupplier;
 import org.jmel.mastermind.core.secretcodesupplier.LocalRandomCodeSupplier;
 import org.jmel.mastermind.core.secretcodesupplier.UserDefinedCodeSupplier;
-import org.jmel.mastermindweb.model.GameSession;
-import org.jmel.mastermindweb.model.GameState;
-import org.jmel.mastermindweb.model.MastermindConfig;
+import org.jmel.mastermindweb.customfeedback.EncouragingStrategyImpl;
+import org.jmel.mastermindweb.dto.GameState;
+import org.jmel.mastermindweb.dto.MastermindConfig;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,8 +31,13 @@ public class GameService {
         Game.Builder builder = new Game.Builder()
                 .codeLength(config.getCodeLength())
                 .numColors(config.getNumColors())
-                .maxAttempts(config.getMaxAttempts())
-                .feedbackStrategy(FeedbackStrategyImpl.valueOf(config.FeedbackStrategy()));
+                .maxAttempts(config.getMaxAttempts());
+
+        if (config.FeedbackStrategy().equals("ENCOURAGING")) {
+            builder.feedbackStrategy(new EncouragingStrategyImpl());
+        } else {
+            builder.feedbackStrategy(FeedbackStrategyImpl.valueOf(config.FeedbackStrategy()));
+        }
 
         CodeSupplier supplier = switch (CodeSupplierPreference.valueOf(config.getCodeSupplierPreference())) {
             case RANDOM_ORG_API -> ApiCodeSupplier.of(config.getCodeLength(), config.getNumColors());

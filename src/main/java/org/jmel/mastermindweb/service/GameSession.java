@@ -1,6 +1,7 @@
-package org.jmel.mastermindweb.model;
+package org.jmel.mastermindweb.service;
 
 import org.jmel.mastermind.core.Game;
+import org.jmel.mastermindweb.dto.MastermindConfig;
 
 import java.util.UUID;
 

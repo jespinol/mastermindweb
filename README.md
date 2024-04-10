@@ -1,8 +1,12 @@
+This repository contains a simple web implementation of the Mastermind game library found at https://github.com/jespinol/mastermind
+
 # Getting started
 ## Prerequisites
-JDK 21.0.2 or later[*](https://jdk.java.net/21/)
+- JDK 21.0.2 or later[*](https://jdk.java.net/21/)
 
-Maven 3.9.6 or later[*](https://maven.apache.org/download.cgi)
+- Maven 3.9.6 or later[*](https://maven.apache.org/download.cgi)
+
+- `mastermindcore` library installed in your local Maven repository. Detailed instructions [can be found here](https://github.com/jespinol/mastermind?tab=readme-ov-file#installation).
 
 ## Installation and starting the application
 

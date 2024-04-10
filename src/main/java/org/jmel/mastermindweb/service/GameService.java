@@ -2,7 +2,10 @@ package org.jmel.mastermindweb.service;
 
 import org.jmel.mastermind.core.Game;
 import org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl;
-import org.jmel.mastermind.core.secretcodesupplier.*;
+import org.jmel.mastermind.core.secretcodesupplier.ApiCodeSupplier;
+import org.jmel.mastermind.core.secretcodesupplier.CodeSupplier;
+import org.jmel.mastermind.core.secretcodesupplier.LocalRandomCodeSupplier;
+import org.jmel.mastermind.core.secretcodesupplier.UserDefinedCodeSupplier;
 import org.jmel.mastermindweb.model.GameSession;
 import org.jmel.mastermindweb.model.GameState;
 import org.jmel.mastermindweb.model.MastermindConfig;
@@ -13,6 +16,8 @@ import java.util.UUID;
 
 @Service
 public class GameService {
+    public enum CodeSupplierPreference {RANDOM_ORG_API, LOCAL_RANDOM, USER_DEFINED}
+
     public static GameSession createGameSession(MastermindConfig config) throws IOException {
         GameSession gameSession = new GameSession();
         gameSession.setId(UUID.randomUUID());

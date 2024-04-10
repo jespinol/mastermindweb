@@ -1,11 +1,10 @@
 package org.jmel.mastermindweb.controller;
 
 import org.jmel.mastermind.core.Game;
-import org.jmel.mastermind.core.feedbackstrategy.Feedback;
-import org.jmel.mastermindweb.model.GameState;
+import org.jmel.mastermindweb.dto.GameState;
 import org.jmel.mastermindweb.service.GameService;
-import org.jmel.mastermindweb.model.GameSession;
-import org.jmel.mastermindweb.model.MastermindConfig;
+import org.jmel.mastermindweb.service.GameSession;
+import org.jmel.mastermindweb.dto.MastermindConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
@@ -35,11 +34,11 @@ public class GameController {
     }
 
     @PostMapping("/guess")
-    public Feedback processGuess(@RequestParam("id") UUID id, @RequestBody List<Integer> guess) {
+    public String processGuess(@RequestParam("id") UUID id, @RequestBody List<Integer> guess) {
         if (!sessions.containsKey(id)) throw new IllegalArgumentException("Session not found");
         Game game = findGameById(id);
 
-        return game.processGuess(guess);
+        return game.processGuess(guess).toString();
     }
 
     private Game findGameById(UUID id) {

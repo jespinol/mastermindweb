@@ -6,7 +6,7 @@ This repository contains a simple web implementation of the Mastermind game libr
 
 - Maven 3.9.6 or later[*](https://maven.apache.org/download.cgi)
 
-- `mastermindcore` library installed in your local Maven repository. Detailed instructions [can be found here](https://github.com/jespinol/mastermind?tab=readme-ov-file#installation).
+- mastermindcore 1.1 library installed in your local Maven repository. Detailed instructions [can be found here](https://github.com/jespinol/mastermind?tab=readme-ov-file#installation).
 
 ## Installation and starting the application
 

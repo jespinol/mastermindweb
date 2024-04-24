@@ -1,9 +1,12 @@
 package org.jmel.mastermindweb.controller;
 
 import org.jmel.mastermind.core.Game;
+import org.jmel.mastermind.core.feedbackstrategy.Feedback;
 import org.jmel.mastermindweb.dto.GameState;
+import org.jmel.mastermindweb.dto.Session;
 import org.jmel.mastermindweb.service.GameService;
 import org.jmel.mastermindweb.dto.MastermindConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
@@ -11,38 +14,46 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.*;
 
+import org.jmel.mastermindweb.dto.SessionRepository;
+
 @RestController
 public class GameController {
-    public Map<UUID, Game> sessions = new HashMap<>();
+    @Autowired
+    private SessionRepository sessionRepository;
 
     @PostMapping("/new")
     public UUID createGame(@RequestBody Optional<MastermindConfig> configInput) throws IOException {
         MastermindConfig config = configInput.orElseGet(MastermindConfig::new);
-        UUID id = UUID.randomUUID();
         Game game = GameService.createGame(config);
-        sessions.put(id, game);
 
-        return id;
+        Session session = new Session();
+        session.setGames(game);
+        sessionRepository.save(session);
+
+        return session.getId();
     }
 
     @GetMapping("/gameInfo")
     public GameState gameInfo(@RequestParam("id") UUID id) {
-        if (!sessions.containsKey(id)) throw new IllegalArgumentException("Session not found");
-        Game game = findGameById(id);
+        Optional<Session> session_opt = sessionRepository.findById(id);
+        if (session_opt.isEmpty()) throw new IllegalArgumentException("Game not found");
+
+        Game game = session_opt.get().getGame();
 
         return GameService.getGameState(game);
     }
 
     @PostMapping("/guess")
     public String processGuess(@RequestParam("id") UUID id, @RequestBody List<Integer> guess) {
-        if (!sessions.containsKey(id)) throw new IllegalArgumentException("Session not found");
-        Game game = findGameById(id);
+        Optional<Session> session_opt = sessionRepository.findById(id);
+        if (session_opt.isEmpty()) throw new IllegalArgumentException("Session not found");
 
-        return game.processGuess(guess).toString();
-    }
+        Session session = session_opt.get();
+        Game game = session.getGame();
+        Feedback feedback = game.processGuess(guess);
+        sessionRepository.save(session);
 
-    private Game findGameById(UUID id) {
-        return sessions.get(id);
+        return feedback.toString();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

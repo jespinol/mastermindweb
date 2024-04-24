@@ -27,6 +27,8 @@ public class GameController {
 
     @PostMapping("/new")
     public UUID createGame(@RequestBody Optional<MastermindConfig> configInput) throws IOException {
+        GameService.purgeOldSessions(sessionRepository);
+
         MastermindConfig config = configInput.orElseGet(MastermindConfig::new);
         Game game = GameService.createGame(config);
 

@@ -9,15 +9,14 @@ import org.jmel.mastermind.core.secretcodesupplier.UserDefinedCodeSupplier;
 import org.jmel.mastermindweb.customfeedback.EncouragingStrategyImpl;
 import org.jmel.mastermindweb.dto.GameState;
 import org.jmel.mastermindweb.dto.MastermindConfig;
+import org.jmel.mastermindweb.dto.SessionRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Service
 public class GameService {
-    public enum CodeSupplierPreference {RANDOM_ORG_API, LOCAL_RANDOM, USER_DEFINED}
-
     public Game createGame(MastermindConfig config) throws IOException {
 
         return buildGame(config);
@@ -50,4 +49,11 @@ public class GameService {
     public GameState getGameState(Game game) {
         return new GameState(game.codeLength(), game.numColors(), game.maxAttempts(), game.isGameWon(), game.movesCompleted());
     }
+
+    public void purgeOldSessions(SessionRepository repo) {
+        LocalDateTime cutoff = LocalDateTime.now().minusWeeks(2);
+        repo.deleteAll(repo.findByCreatedAtBefore(cutoff));
+    }
+
+    public enum CodeSupplierPreference {RANDOM_ORG_API, LOCAL_RANDOM, USER_DEFINED}
 }

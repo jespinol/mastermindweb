@@ -7,6 +7,23 @@ This repository contains a simple web implementation of the Mastermind game libr
 - Maven 3.9.6 or later[*](https://maven.apache.org/download.cgi)
 
 - mastermindcore 1.1 library installed in your local Maven repository. Detailed instructions [can be found here](https://github.com/jespinol/mastermind?tab=readme-ov-file#installation).
+- MySQL 8.0.27 or later
+
+   This application requires a mySQL database. Additional information to install and run mySQL server can be found [here](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/) and [here](https://www.mysql.com/products/workbench/)
+   
+   Once mySQL server is installed and running, you must create the required database.
+   First, log into mySQL:
+   ```shell
+   sudo /path/to/mysql --password
+   ```
+   You may need to enter your OS admin password, followed by the mySQL root password.
+   
+   Then, to create the database run the following commands:
+   ```sql
+   CREATE DATABASE IF NOT EXISTS mastermind;
+   CREATE USER IF NOT EXISTS 'mastermind'@'%' IDENTIFIED BY 'password';
+   GRANT ALL ON mastermind.* TO 'mastermind'@'%';
+   ```
 
 ## Installation and starting the application
 
@@ -49,13 +66,13 @@ The allowed choices for `feedbackStrategy` are: `[DEFAULT, ORIGINAL_MASTERMIND, 
 ### Playing the game
 To send a guess, send a `POST` request to the endpoint `/guess` with the game identifier and a JSON body containing a list of integers. For example:
 ```shell
-curl 'localhost:8080/guess?id=bac7e344-1afd-45fa-ab06-6112e45fa2ff' --json '[1,2,3,0]'
+curl 'localhost:8080/guess?id=<UUID>' --json '[1,2,3,0]'
 ```
-assuming the game identifier is valid and the game is in progress, will return feedback for the guess.
+assuming the game identifier is valid and the game is in progress, will return feedback for a valid guess.
 
 ### Getting information about a game
 To get information about the game, send a `GET` request to the endpoint `/gameInfo` with the game identifier. For example:
 ```shell
 curl "localhost:8080/gameInfo?id=<UUID>"
 ```
-Will return a string with information about the game's configuration and state.
+will return a string with information about the game's configuration and state.

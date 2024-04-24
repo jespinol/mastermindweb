@@ -68,13 +68,19 @@ public class GameController {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    String handleHttpNotReadableException (HttpMessageNotReadableException e) {
+    String handleHttpNotReadableException(HttpMessageNotReadableException e) {
         return e.getMessage();
     }
 
     @ExceptionHandler(IOException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     String handleIOException(IOException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    String handleIllegalStateException(IllegalStateException e) {
         return e.getMessage();
     }
 }

@@ -1,98 +1,93 @@
 package org.jmel.mastermindweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jmel.mastermindweb.controller.GameController;
+import net.minidev.json.JSONObject;
 import org.jmel.mastermindweb.dto.GameState;
-import org.jmel.mastermindweb.dto.MastermindConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.*;
 
-@WebMvcTest(GameController.class)
+//@WebMvcTest(GameController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GameControllerTests {
+    @LocalServerPort
+    private int port = 8080;
+
     @Autowired
-    MockMvc mockMvc;
+    private TestRestTemplate restTemplate;
+
+    private final String URI = "http://localhost:";
 
     @Test
-    void sessionWithDefaultGameIsCreatedSuccessfully() throws Exception {
-        mockMvc.perform(post("/new")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(""))
-                .andExpect(status().isOk());
+    void sessionWithDefaultGameIsCreatedSuccessfully() {
+        UUID id = this.restTemplate.postForObject(URI + port + "/new", new JSONObject(), UUID.class);
+
+        assertNotNull(id);
+        assertEquals(id.getClass(), UUID.class);
     }
 
     @Test
-    void sessionWithCustomizedGameIsCreatedSuccessfully() throws Exception {
-        MastermindConfig config = new MastermindConfig();
-        config.setCodeLength(4);
-        config.setNumColors(8);
-        config.setMaxAttempts(10);
-        config.setCodeSupplierPreference("LOCAL_RANDOM");
-        config.setFeedbackStrategy("DEFAULT");
+    void sessionWithCustomizedGameIsCreatedSuccessfully() {
+        JSONObject config = new JSONObject();
+        config.put("codeLength", 5);
+        config.put("numColors", 10);
+        config.put("maxAttempts", 3);
+        config.put("codeSupplierPreference", "LOCAL_RANDOM");
+        config.put("feedbackStrategy", "HIGHER_LOWER");
 
-        ObjectMapper mapper = new ObjectMapper();
-        String bodyJson = mapper.writer().writeValueAsString(config);
+        UUID id = this.restTemplate.postForObject(URI + port + "/new", config, UUID.class);
 
-        mockMvc.perform(post("/new")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(bodyJson))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void gameAcceptsGuessAndReturnsFeedback() throws Exception {
-        MvcResult sessionId = mockMvc.perform(post("/new")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(""))
-                .andExpect(status().isOk())
-                .andReturn();
-
-
-        ObjectMapper mapper = new ObjectMapper();
-        String bodyJson = mapper.writer().writeValueAsString(List.of(1, 2, 3, 4));
-        UUID id = UUID.fromString(sessionId.getResponse().getContentAsString().replace("\"", ""));
-        mockMvc.perform(post("/guess?id=" + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(bodyJson))
-                .andExpect(status().isOk());
+        assertNotNull(id);
+        assertEquals(id.getClass(), UUID.class);
     }
 
     @Test
     void gameInfoReturnsValidGameState() throws Exception {
-        MvcResult idResponse = mockMvc.perform(post("/new")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(""))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        UUID id = UUID.fromString(idResponse.getResponse().getContentAsString().replace("\"", ""));
-        String infoResponse = mockMvc.perform(get("/gameInfo?id=" + id))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        UUID id = this.restTemplate.postForObject(URI + port + "/new", new JSONObject(), UUID.class);
+        String infoResponse = this.restTemplate.getForObject(URI + port + "/gameInfo?id=" + id, String.class);
 
         GameState actual = new ObjectMapper().readValue(infoResponse, GameState.class);
         GameState expected = new GameState(4, 8, 10, false, 0);
 
+        assertNotNull(id);
+        assertNotNull(infoResponse);
         assertEquals(expected, actual);
     }
 
     @Test
-    void gameInfoReturnsGameNotFound() throws Exception {
-        mockMvc.perform(get("/gameInfo?id=" + UUID.randomUUID()))
-                .andExpect(status().isNotFound());
+    void gameInfoReturnsGameNotFound() {
+        String infoResponse = this.restTemplate.getForObject(URI + port + "/gameInfo?id=" + UUID.randomUUID(), String.class);
 
+        assertNotNull(infoResponse);
+        assertEquals("Game not found", infoResponse);
+    }
+
+    @Test
+    void gameAcceptsGuessAndReturnsFeedback() {
+        UUID id = this.restTemplate.postForObject(URI + port + "/new", new JSONObject(), UUID.class);
+        List<Integer> guess = List.of(1, 2, 3, 4);
+        String feedback = this.restTemplate.postForObject(URI + port + "/guess?id=" + id, guess, String.class);
+
+        assertNotNull(id);
+        assertNotNull(feedback);
+        assertTrue(feedback.matches("^\\d+ correct numbers, \\d+ correctly placed$"));
+    }
+
+    @Test
+    void gameRejectsInvalidGuess() {
+        UUID id = this.restTemplate.postForObject(URI + port + "/new", new JSONObject(), UUID.class);
+        List<Integer> guess = List.of(1, 2, 3, 4, 5, 6, 7);
+        String feedback = this.restTemplate.postForObject(URI + port + "/guess?id=" + id, guess, String.class);
+
+        assertNotNull(id);
+        assertNotNull(feedback);
+        assertTrue(feedback.contains("Invalid code length!"));
     }
 }

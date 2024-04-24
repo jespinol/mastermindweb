@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 //@WebMvcTest(GameController.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class GameControllerTests {
+public class GameTests {
     @LocalServerPort
     private int port = 8080;
 
@@ -89,5 +89,20 @@ public class GameControllerTests {
         assertNotNull(id);
         assertNotNull(feedback);
         assertTrue(feedback.contains("Invalid code length!"));
+    }
+
+    @Test
+    void gameIsWonWithCorrectGuess() {
+        JSONObject config = new JSONObject();
+        config.put("secretCode", List.of(1, 2, 3, 4));
+        config.put("codeSupplierPreference", "USER_DEFINED");
+
+        UUID id = this.restTemplate.postForObject(URI + port + "/new", config, UUID.class);
+        List<Integer> guess = List.of(1, 2, 3, 4);
+        String feedback = this.restTemplate.postForObject(URI + port + "/guess?id=" + id, guess, String.class);
+
+        assertNotNull(id);
+        assertNotNull(feedback);
+        assertTrue(feedback.matches("^4 correct numbers, 4 correctly placed$"));
     }
 }

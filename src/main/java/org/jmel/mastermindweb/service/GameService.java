@@ -18,12 +18,12 @@ import java.util.UUID;
 public class GameService {
     public enum CodeSupplierPreference {RANDOM_ORG_API, LOCAL_RANDOM, USER_DEFINED}
 
-    public static Game createGame(MastermindConfig config) throws IOException {
+    public Game createGame(MastermindConfig config) throws IOException {
 
         return buildGame(config);
     }
 
-    public static Game buildGame(MastermindConfig config) throws IOException {
+    public Game buildGame(MastermindConfig config) throws IOException {
         Game.Builder builder = new Game.Builder()
                 .codeLength(config.getCodeLength())
                 .numColors(config.getNumColors())
@@ -47,7 +47,7 @@ public class GameService {
         return builder.build();
     }
 
-    public static GameState getGameState(Game game) {
+    public GameState getGameState(Game game) {
         return new GameState(game.codeLength(), game.numColors(), game.maxAttempts(), game.isGameWon(), game.movesCompleted());
     }
 }

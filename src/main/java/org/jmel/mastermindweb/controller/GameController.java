@@ -3,23 +3,27 @@ package org.jmel.mastermindweb.controller;
 import org.jmel.mastermind.core.Game;
 import org.jmel.mastermind.core.feedbackstrategy.Feedback;
 import org.jmel.mastermindweb.dto.GameState;
-import org.jmel.mastermindweb.dto.Session;
-import org.jmel.mastermindweb.service.GameService;
 import org.jmel.mastermindweb.dto.MastermindConfig;
+import org.jmel.mastermindweb.dto.Session;
+import org.jmel.mastermindweb.dto.SessionRepository;
+import org.jmel.mastermindweb.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.*;
-
-import org.jmel.mastermindweb.dto.SessionRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class GameController {
     @Autowired
     private SessionRepository sessionRepository;
+
+    @Autowired
+    private GameService GameService;
 
     @PostMapping("/new")
     public UUID createGame(@RequestBody Optional<MastermindConfig> configInput) throws IOException {

@@ -4,6 +4,7 @@ import org.jmel.mastermind.core.Game;
 import org.jmel.mastermindweb.dto.MastermindConfig;
 import org.jmel.mastermindweb.service.GameService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
@@ -13,6 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class GameServiceTests {
+    @Autowired
+    private GameService GameService;
+
     @Test
     void builderMethodReturnsGameWithDefaults() throws IOException {
         GameService.buildGame(new MastermindConfig());
